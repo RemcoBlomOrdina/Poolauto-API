@@ -48,7 +48,9 @@ public class CarRepository {
                 rdwCarDataGeneral.getUitvoering(),
                 rdwCarDataGeneral.getAantal_cilinders() + " cilinders met een inhoud van " + rdwCarDataGeneral.getCilinderinhoud(),
                 rdwCarDataFuel.getBrandstof_omschrijving(),
-                rdwCarDataGeneral.getCatalogusprijs()
+                rdwCarDataGeneral.getCatalogusprijs(),
+                rdwCarDataGeneral.getDatum_eerste_afgifte_nederland(),
+                rdwCarDataFuel.getCo2_uitstoot_gecombineerd()
         );
     }
 }

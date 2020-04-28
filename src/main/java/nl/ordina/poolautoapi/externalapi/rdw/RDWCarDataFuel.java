@@ -12,4 +12,5 @@ public class RDWCarDataFuel {
     public static final String API_URL = "https://opendata.rdw.nl/resource/8ys7-d773.json?kenteken=";
 
     private String brandstof_omschrijving;
+    private String co2_uitstoot_gecombineerd;
 }

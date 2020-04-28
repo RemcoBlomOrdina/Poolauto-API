@@ -36,7 +36,7 @@ public class RDWCarDataGeneral {
     private String aantal_cilinders;
     private String cilinderinhoud;
     private String catalogusprijs;
-
+    private String datum_eerste_afgifte_nederland;
 
 
 //        "kenteken":"22ZBR8",
