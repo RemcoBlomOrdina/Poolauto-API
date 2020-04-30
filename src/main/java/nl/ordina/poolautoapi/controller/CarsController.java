@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nl.ordina.poolautoapi.model.Car;
 import nl.ordina.poolautoapi.model.LicensePlateNumber;
 import nl.ordina.poolautoapi.repository.CarRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class CarsController {
 
-    private final CarRepository carRepository;
+    @Autowired
+    private CarRepository carRepository;
 
     @GetMapping
     @RequestMapping("{licensePlateNumber}")
