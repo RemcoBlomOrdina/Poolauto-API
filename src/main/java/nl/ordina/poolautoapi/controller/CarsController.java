@@ -1,10 +1,10 @@
 package nl.ordina.poolautoapi.controller;
 
 import lombok.AllArgsConstructor;
+import nl.ordina.poolautoapi.exception.ServerErrorException;
 import nl.ordina.poolautoapi.model.Car;
 import nl.ordina.poolautoapi.model.LicensePlateNumber;
 import nl.ordina.poolautoapi.repository.CarRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,12 +13,17 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class CarsController {
 
-    @Autowired
-    private CarRepository carRepository;
+    private final CarRepository carRepository;
 
     @GetMapping
     @RequestMapping("{licensePlateNumber}")
     public Car getCar(@PathVariable String licensePlateNumber) {
-        return carRepository.getCar(new LicensePlateNumber(licensePlateNumber));
+        try {
+            return carRepository.getCar(new LicensePlateNumber(licensePlateNumber));
+        } catch (Exception e) {
+            throw new ServerErrorException(e);
+        }
     }
+
+
 }
