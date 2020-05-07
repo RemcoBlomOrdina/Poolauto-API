@@ -5,7 +5,6 @@ import nl.ordina.poolautoapi.exception.IncorrectFormatException;
 import nl.ordina.poolautoapi.exception.NoDataFoundException;
 import nl.ordina.poolautoapi.exception.ServerErrorException;
 import nl.ordina.poolautoapi.model.Car;
-import nl.ordina.poolautoapi.helper.LicensePlateNumber;
 import nl.ordina.poolautoapi.repository.CarRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class CarsController {
     @RequestMapping("{licensePlateNumber}")
     public Car getCar(@PathVariable String licensePlateNumber) {
         try {
-            return carRepository.getCar(new LicensePlateNumber(licensePlateNumber));
+            return carRepository.getCar(licensePlateNumber);
         } catch (IllegalArgumentException e) {
             throw new IncorrectFormatException(e);
         } catch (IndexOutOfBoundsException e) {

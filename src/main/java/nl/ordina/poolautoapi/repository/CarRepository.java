@@ -1,7 +1,5 @@
 package nl.ordina.poolautoapi.repository;
 
-import nl.ordina.poolautoapi.exception.NoDataFoundException;
-import nl.ordina.poolautoapi.exception.ServerErrorException;
 import nl.ordina.poolautoapi.externalapi.rdw.RDWCarDataFuel;
 import nl.ordina.poolautoapi.externalapi.rdw.RDWCarDataGeneral;
 import nl.ordina.poolautoapi.model.Car;
@@ -15,7 +13,8 @@ import java.util.Optional;
 @Repository
 public class CarRepository {
 
-    public Car getCar(LicensePlateNumber licensePlateNumber) throws RestClientException {
+    public Car getCar(String licensePlateNumberString) throws RestClientException {
+        LicensePlateNumber licensePlateNumber = new LicensePlateNumber(licensePlateNumberString);
         RestTemplate restTemplate = new RestTemplate();
 
         RDWCarDataGeneral[] rdwCarDataGeneralArray = Optional.ofNullable(restTemplate.getForObject(RDWCarDataGeneral.API_URL + licensePlateNumber, RDWCarDataGeneral[].class))
