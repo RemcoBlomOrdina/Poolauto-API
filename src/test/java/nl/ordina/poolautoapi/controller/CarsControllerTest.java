@@ -62,4 +62,6 @@ public class CarsControllerTest {
         mockMvc.perform(get(VALID_API_URL + "{licensePlateNumber}", validLicensePlateNumber))
                 .andExpect(status().isInternalServerError());
     }
+
+
 }
