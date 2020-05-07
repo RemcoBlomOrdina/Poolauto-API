@@ -1,19 +1,17 @@
 package nl.ordina.poolautoapi.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class APIError {
 
     private final int httpStatusCode;
-    private final String httpStatusDescription;
-    private final String message;
+    private final String httpStatusBeschrijving;
+    private final String oorzaak;
 
-    public APIError(HttpStatus httpStatus, String message) {
-        this.httpStatusCode = httpStatus.value();
-        this.httpStatusDescription = httpStatus.getReasonPhrase();
-        this.message = message;
+    public APIError(PoolautoException e) {
+        this.httpStatusCode = e.getHttpStatusCode();
+        this.httpStatusBeschrijving = e.getHttpStatusBeschrijving();
+        this.oorzaak = e.getOorzaak();
     }
 }
