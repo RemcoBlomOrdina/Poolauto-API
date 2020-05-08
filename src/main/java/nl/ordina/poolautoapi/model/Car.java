@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 
 @Getter
 public class Car {
@@ -44,63 +46,6 @@ public class Car {
         this.brutoBijtellingPerMaand = calculateBrutoBijtellingPerMaand(cataloguswaarde, bijtellingsPercentage);
     }
 
-    private String calculateBijtellingsPercentage(String datumEersteAfgifteNederland, String co2UitstootGecombineerd, String brandstof, String cataloguswaarde) {
-        int jaarEersteAfgifteNederland;
-        int co2UitstootGecombineerdInt;
-        int cataloguswaardeInt;
-        try {
-            jaarEersteAfgifteNederland = Integer.parseInt(datumEersteAfgifteNederland.substring(0, 4));
-            co2UitstootGecombineerdInt = Integer.parseInt(co2UitstootGecombineerd);
-            cataloguswaardeInt = Integer.parseInt(cataloguswaarde);
-        } catch (NumberFormatException e) {
-            return "berekening niet mogelijk";
-        }
-
-        if (jaarEersteAfgifteNederland < 2015) {
-            return "data voor 2015 niet beschikbaar";
-        } else if (jaarEersteAfgifteNederland > 2020) {
-            return "data na 2020 niet beschikbaar";
-        } else if (brandstof.equals("Elektriciteit")){
-            if(jaarEersteAfgifteNederland <= 2018) {
-                return "4";
-            } else if(jaarEersteAfgifteNederland == 2019) {
-                if (cataloguswaardeInt <= 50000) {
-                    return "4";
-                } else {
-                    return "22";
-                }
-            } else /* 2020 */ {
-                if (cataloguswaardeInt <= 45000) {
-                    return "8";
-                } else {
-                    return "22";
-                }
-            }
-        } else {
-            if (jaarEersteAfgifteNederland >= 2017) {
-                return "22";
-            } else if (jaarEersteAfgifteNederland == 2016) {
-                if (co2UitstootGecombineerdInt <= 50) {
-                    return "15";
-                } else if (co2UitstootGecombineerdInt <= 106) {
-                    return "21";
-                } else {
-                    return "25";
-                }
-            } else {
-                if (co2UitstootGecombineerdInt <= 50) {
-                    return "7";
-                } else if (co2UitstootGecombineerdInt <= 82) {
-                    return "14";
-                } else if (co2UitstootGecombineerdInt <= 106) {
-                    return "20";
-                } else {
-                    return "25";
-                }
-            }
-        }
-    }
-
     private String calculateBrutoBijtellingPerMaand(String cataloguswaarde, String bijtellingsPercentage) {
         int cataloguswaardeInt;
         int bijtellingsPercentageInt;
@@ -113,5 +58,52 @@ public class Car {
 
         NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("nl", "NL"));
         return numberFormat.format(cataloguswaardeInt * ((double)bijtellingsPercentageInt / 100) / 12);
+    }
+
+    private String calculateBijtellingsPercentage(String datumEersteAfgifteNederland, String co2UitstootGecombineerd, String brandstof, String cataloguswaarde) {
+        try {
+            String jaarEersteAfgifteNederland = datumEersteAfgifteNederland.substring(0,4);
+            String brandstofLowerCase = brandstof.toLowerCase();
+            int co2UitstootGecombineerdInt = Integer.parseInt(co2UitstootGecombineerd);
+            int cataloguswaardeInt = Integer.parseInt(cataloguswaarde);
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("bijtelling");
+
+            return resourceBundle.keySet().stream()
+                    .map(k -> new BijtellingProperty(k, resourceBundle.getString(k)))
+                    .filter(b -> b.jaar.equals(jaarEersteAfgifteNederland))
+                    .filter(b -> b.brandstof.contains(brandstofLowerCase))
+                    .filter(b -> {
+                        if (brandstofLowerCase.equals("elektriciteit")) {
+                            return b.minimumwaarde <= cataloguswaardeInt && b.maximumwaarde >= cataloguswaardeInt;
+                        } else {
+                            return b.minimumwaarde <= co2UitstootGecombineerdInt && b.maximumwaarde >= co2UitstootGecombineerdInt;
+                        }
+                    })
+                    .findAny().get().bijtellingspercentage;
+        } catch (NumberFormatException | NoSuchElementException e) {
+            return "berekening niet mogelijk";
+        }
+    }
+
+    private static class BijtellingProperty {
+        private final String jaar;
+        private final String brandstof;
+        private final int minimumwaarde;
+        private final int maximumwaarde;
+        private final String bijtellingspercentage;
+
+        private BijtellingProperty(String resourceBundleKey, String resourceBundleValue) {
+            String[] resourceBundleKeyParts = resourceBundleKey.split("_");
+            jaar = resourceBundleKeyParts[0];
+            brandstof = resourceBundleKeyParts[1];
+            String[] waardes = resourceBundleKeyParts[2].split("-");
+            minimumwaarde = Integer.parseInt(waardes[0]);
+            if (waardes[1].equals("max")){
+                maximumwaarde = Integer.MAX_VALUE;
+            } else {
+                maximumwaarde = Integer.parseInt(waardes[1]);
+            }
+            bijtellingspercentage = resourceBundleValue;
+        }
     }
 }
