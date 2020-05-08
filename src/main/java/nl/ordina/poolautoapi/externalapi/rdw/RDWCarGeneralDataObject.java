@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RDWCarDataGeneral {
+public class RDWCarGeneralDataObject {
 
     public static final String API_URL = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=";
 
