@@ -7,10 +7,6 @@ public class ServerErrorException extends PoolautoException {
     private static final HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     private static final String message = "Er ging iets fout in de server";
 
-    public ServerErrorException() {
-        super(httpStatus.value(), httpStatus.getReasonPhrase(), message);
-    }
-
     public ServerErrorException(Exception e) {
         super(e, httpStatus.value(), httpStatus.getReasonPhrase(), message);
     }
