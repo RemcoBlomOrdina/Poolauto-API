@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  backend:
+    image: poolauto-api-backend:0.0.1
+    ports:
+      - "8080:8080"
+    volumes:
+      - $HOME/ApplicationProperties/poolauto-api:/root/ApplicationProperties/poolauto-api
+    restart: always
+    networks:
+      - backend
+
+  frontend:
+    image: poolauto-api-frontend:0.0.1
+    ports:
+      - "80:80"
+    links:
+      - backend
+    depends_on:
+      - backend
+    networks:
+      - frontend
+
+networks:
+  backend:
+  frontend:

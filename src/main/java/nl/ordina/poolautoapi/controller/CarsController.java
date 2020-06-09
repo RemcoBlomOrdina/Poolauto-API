@@ -5,8 +5,7 @@ import nl.ordina.poolautoapi.exception.IncorrectFormatException;
 import nl.ordina.poolautoapi.exception.NoDataFoundException;
 import nl.ordina.poolautoapi.exception.ServerErrorException;
 import nl.ordina.poolautoapi.model.Car;
-import nl.ordina.poolautoapi.helper.LicensePlateNumber;
-import nl.ordina.poolautoapi.repository.CarRepository;
+import nl.ordina.poolautoapi.service.CarService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,18 +14,20 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class CarsController {
 
-    private final CarRepository carRepository;
+    private final CarService carService;
 
     @GetMapping
     @RequestMapping("{licensePlateNumber}")
     public Car getCar(@PathVariable String licensePlateNumber) {
         try {
-            return carRepository.getCar(new LicensePlateNumber(licensePlateNumber));
+            return carService.getCar(licensePlateNumber);
         } catch (IllegalArgumentException e) {
             throw new IncorrectFormatException(e);
         } catch (IndexOutOfBoundsException e) {
             throw new NoDataFoundException(e);
         } catch (Exception e) {
+            // RestClientException
+            e.printStackTrace();
             throw new ServerErrorException(e);
         }
     }

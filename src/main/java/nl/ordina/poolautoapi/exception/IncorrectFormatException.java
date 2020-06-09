@@ -9,10 +9,6 @@ public class IncorrectFormatException extends PoolautoException {
             "Het opgegeven kenteken is ongeldig. " +
                     "Een geldig kenteken bestaat uit zes alfnumerieke tekens.";
 
-    public IncorrectFormatException() {
-        super(httpStatus.value(), httpStatus.getReasonPhrase(), message);
-    }
-
     public IncorrectFormatException(Exception e) {
         super(e, httpStatus.value(), httpStatus.getReasonPhrase(), message);
     }
