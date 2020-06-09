@@ -3,7 +3,7 @@ package nl.ordina.poolautoapi.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import nl.ordina.poolautoapi.model.Car;
-import nl.ordina.poolautoapi.repository.CarRepository;
+import nl.ordina.poolautoapi.service.CarService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class CarsControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private CarRepository mockCarRepository;
+    private CarService mockCarService;
 
     private static final String VALID_API_URL = "/api/v1/cars/";
 
@@ -34,7 +34,7 @@ public class CarsControllerTest {
         String validLicensePlateNumber = "85PHRX";
         Car car = Mockito.mock(Car.class);
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        Mockito.when(mockCarRepository.getCar(validLicensePlateNumber)).thenReturn(car);
+        Mockito.when(mockCarService.getCar(Mockito.any(String.class))).thenReturn(car);
         mockMvc.perform(get(VALID_API_URL + "{licensePlateNumber}", validLicensePlateNumber))
                 .andExpect(status().isOk());
     }
@@ -42,7 +42,7 @@ public class CarsControllerTest {
     @Test
     void illegalArgumentExceptionReturns400() throws Exception {
         String invalidLicensePlateNumber = "EF34HJK";
-        Mockito.when(mockCarRepository.getCar(invalidLicensePlateNumber)).thenThrow(IllegalArgumentException.class);
+        Mockito.when(mockCarService.getCar(invalidLicensePlateNumber)).thenThrow(IllegalArgumentException.class);
         mockMvc.perform(get(VALID_API_URL + "{licensePlateNumber}", invalidLicensePlateNumber))
                 .andExpect(status().isBadRequest());
     }
@@ -50,7 +50,7 @@ public class CarsControllerTest {
     @Test
     void indexOutOfBoundsExceptionReturns404() throws Exception {
         String unknownLicensePlateNumber = "EF34HJ";
-        Mockito.when(mockCarRepository.getCar(unknownLicensePlateNumber)).thenThrow(IndexOutOfBoundsException.class);
+        Mockito.when(mockCarService.getCar(unknownLicensePlateNumber)).thenThrow(IndexOutOfBoundsException.class);
         mockMvc.perform(get(VALID_API_URL + "{licensePlateNumber}", unknownLicensePlateNumber))
                 .andExpect(status().isNotFound());
     }
@@ -58,7 +58,7 @@ public class CarsControllerTest {
     @Test
     void restClientExceptionReturns500() throws Exception {
         String validLicensePlateNumber = "XVNZ71";
-        Mockito.when(mockCarRepository.getCar(validLicensePlateNumber)).thenThrow(RestClientException.class);
+        Mockito.when(mockCarService.getCar(validLicensePlateNumber)).thenThrow(RestClientException.class);
         mockMvc.perform(get(VALID_API_URL + "{licensePlateNumber}", validLicensePlateNumber))
                 .andExpect(status().isInternalServerError());
     }
