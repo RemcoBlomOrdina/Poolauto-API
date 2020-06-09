@@ -1,10 +1,8 @@
 package nl.ordina.poolautoapi.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public abstract class PoolautoException extends RuntimeException {
 
     private final int httpStatusCode;
