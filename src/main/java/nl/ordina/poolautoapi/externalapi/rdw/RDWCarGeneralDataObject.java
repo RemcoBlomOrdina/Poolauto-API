@@ -2,14 +2,14 @@ package nl.ordina.poolautoapi.externalapi.rdw;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RDWCarGeneralDataObject {
-
-    public static final String API_URL = "https://opendata.rdw.nl/resource/m9d7-ebf2.json?kenteken=";
 
 //    private final String licensePlateNumber;          // kenteken
 //    private final String brand;                       // merk
@@ -33,6 +33,7 @@ public class RDWCarGeneralDataObject {
     private String inrichting;
     private String eerste_kleur;
     private String uitvoering;
+    private String zuinigheidslabel;
     private String aantal_cilinders;
     private String cilinderinhoud;
     private String catalogusprijs;
