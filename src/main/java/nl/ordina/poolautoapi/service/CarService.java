@@ -1,4 +1,4 @@
-package nl.ordina.poolautoapi.repository;
+package nl.ordina.poolautoapi.service;
 
 import nl.ordina.poolautoapi.externalapi.rdw.RDWCarFuelAPI;
 import nl.ordina.poolautoapi.externalapi.rdw.RDWCarFuelDataObject;
@@ -6,20 +6,23 @@ import nl.ordina.poolautoapi.externalapi.rdw.RDWCarGeneralAPI;
 import nl.ordina.poolautoapi.externalapi.rdw.RDWCarGeneralDataObject;
 import nl.ordina.poolautoapi.model.Car;
 import nl.ordina.poolautoapi.helper.LicensePlateNumber;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+@Service
+public class CarService {
 
-@Repository
-public class CarRepository {
+    @Autowired
+    private RDWCarGeneralAPI rdwCarGeneralAPI;
+
+    @Autowired
+    private RDWCarFuelAPI rdwCarFuelAPI;
 
     public Car getCar(String licensePlateNumberString) {
         LicensePlateNumber licensePlateNumber = new LicensePlateNumber(licensePlateNumberString);
 
-        RDWCarGeneralDataObject rdwCarGeneralDataObject = new RDWCarGeneralAPI().getDataObject(licensePlateNumber);
-        RDWCarFuelDataObject rdwCarFuelDataObject = new RDWCarFuelAPI().getDataObject(licensePlateNumber);
+        RDWCarGeneralDataObject rdwCarGeneralDataObject = rdwCarGeneralAPI.getDataObject(licensePlateNumber);
+        RDWCarFuelDataObject rdwCarFuelDataObject = rdwCarFuelAPI.getDataObject(licensePlateNumber);
 
         return new Car(
                 rdwCarGeneralDataObject.getKenteken(),
@@ -28,11 +31,16 @@ public class CarRepository {
                 rdwCarGeneralDataObject.getInrichting(),
                 rdwCarGeneralDataObject.getEerste_kleur(),
                 rdwCarGeneralDataObject.getUitvoering(),
-                rdwCarGeneralDataObject.getAantal_cilinders() + " cilinders met een inhoud van " + rdwCarGeneralDataObject.getCilinderinhoud(),
+                rdwCarGeneralDataObject.getAantal_cilinders(),
+                rdwCarGeneralDataObject.getCilinderinhoud(),
                 rdwCarFuelDataObject.getBrandstof_omschrijving(),
+                rdwCarGeneralDataObject.getZuinigheidslabel(),
                 rdwCarGeneralDataObject.getCatalogusprijs(),
                 rdwCarGeneralDataObject.getDatum_eerste_afgifte_nederland(),
                 rdwCarFuelDataObject.getCo2_uitstoot_gecombineerd()
         );
+
+//        System.getProperties().keySet()
+//        user home
     }
 }
